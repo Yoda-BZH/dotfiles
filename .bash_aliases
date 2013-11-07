@@ -24,6 +24,7 @@ alias sudo="sudo -E" ## does not work on lenny
 alias please="sudo"
 alias gaeny="geany"
 alias sys_create_dirs="mkdir -p bin etc lib usr/{src,share} var/{www,run,lib,log} tmp"
+alias anonssh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 # some more ls aliases
 alias ll='ls -alF'
