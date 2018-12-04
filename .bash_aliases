@@ -23,6 +23,8 @@ alias dquilt="quilt --quiltrc=${HOME}/.quiltrc-dpkg"
 alias sudo="sudo -E" ## does not work on lenny
 alias please="sudo"
 alias gaeny="geany"
+alias vul="vim"
+alias gti="git"
 alias sys_create_dirs="mkdir -p bin etc lib usr/{src,share} var/{www,run,lib,log} tmp"
 alias anonssh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
@@ -30,6 +32,11 @@ alias anonssh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+
+export EDITOR="vim"
+
+# https://github.com/lf94/peek-for-tmux
+peek() { tmux split-window -p 33 "$EDITOR" "$@" || exit; }
 
 ## blue
 	export PS1='\[\033[1;34m\]\[\033)0\016\]\[\]lq\[\017\033(B\](\[\033[1;37m\]\u\[\033[1;34m\]@\[\033[1;37m\]\h\[\033[1;34m\])(\[\033[1;37m\]\t\[\033[1;34m\])\n\[\033[1;34m\]\[\033)0\016\]\[\]mq\[\017\033(B\](\[\033[1;37m\]\w\[\033[1;34m\])\[\033[1;37m\]->\[\033[0m\] '
@@ -63,4 +70,43 @@ if [ -d "$HOME/bin" ]
 then
 	export PATH=$PATH:$HOME/bin
 fi
+
+
+mysql-stats() {
+  for i in key_buffer_size query_cache_size tmp_table_size innodb_buffer_pool_size innodb_additional_mem_pool_size innodb_log_buffer_size max_connections
+  do
+    val=$(echo "SHOW VARIABLES WHERE Variable_Name = '$i';" | mysql -N | awk '{ print $2 }')
+    t=""
+    if [ $val -gt 1048576 ]
+    then
+      val=$(echo "$val / 1024 / 1024" | bc)
+      t="M"
+    elif [ $val -gt 1024 ]
+    then
+      val=$(echo "$val / 1024" | bc)
+      t="k"
+    fi
+    echo "$i: $val $t"
+  done
+
+  for i in sort_buffer_size read_buffer_size read_rnd_buffer_size join_buffer_size thread_stack binlog_cache_size
+  do
+    val=$(echo "SHOW VARIABLES WHERE Variable_Name = '$i';" | mysql -N | awk '{ print $2 }')
+    t=""
+    if [ $val -gt 1048576 ]
+    then
+      val=$(echo "$val / 1024 / 1024" | bc)
+      t="M"
+    elif [ $val -gt 1024 ]
+    then
+      val=$(echo "$val / 1024" | bc)
+      t="k"
+    fi
+    echo "$i: $val $t"
+  done
+}
+
+mysql-calc-memory () {
+  echo "SELECT ROUND((@@key_buffer_size + @@query_cache_size + @@tmp_table_size + @@innodb_buffer_pool_size + @@innodb_log_buffer_size + @@max_connections * (@@sort_buffer_size + @@read_buffer_size + @@read_rnd_buffer_size + @@join_buffer_size + @@thread_stack + @@binlog_cache_size)) / 1024 / 1024, 2) AS 'Required memory';" | mysql
+}
 
