@@ -23,6 +23,8 @@ alias dquilt="quilt --quiltrc=${HOME}/.quiltrc-dpkg"
 #alias sudo="sudo -E" ## does not work on lenny
 alias please="sudo"
 alias gaeny="geany"
+alias vul="vim"
+alias gti="git"
 alias sys_create_dirs="mkdir -p bin etc lib usr/{src,share} var/{www,run,lib,log} tmp"
 alias anonssh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 alias vul="vim"
@@ -38,6 +40,11 @@ alias openssl-view-csr="openssl req -noout -text -in"
 alias openssl-view-crt="openssl x509 -noout -text -in"
 
 export EDITOR="vim"
+peek() { tmux split-window -p 33 "$EDITOR" "$@" || exit; }
+
+export EDITOR="vim"
+
+# https://github.com/lf94/peek-for-tmux
 peek() { tmux split-window -p 33 "$EDITOR" "$@" || exit; }
 
 ## blue
@@ -80,24 +87,7 @@ then
 	export PATH=$HOME/bin:$PATH
 fi
 
-function otdir() {
-  data="$1"
-
-  dir="$HOME/usr/share/ot"
-  today=$(date +%F)
-
-  newdir="$dir/$today"
-  if [ ! -z "$data" ]
-  then
-    newdir+="-$data"
-  fi
-
-  mkdir $newdir && cd $_
-  #cd $newdir
-  #echo $newdir
-}
-
-ot-mysql-stats() {
+mysql-stats() {
   for i in key_buffer_size query_cache_size tmp_table_size innodb_buffer_pool_size innodb_additional_mem_pool_size innodb_log_buffer_size max_connections
   do
     val=$(echo "SHOW VARIABLES WHERE Variable_Name = '$i';" | mysql -N | awk '{ print $2 }')
@@ -131,6 +121,6 @@ ot-mysql-stats() {
   done
 }
 
-ot-mysql-calc-memory () {
+mysql-calc-memory () {
   echo "SELECT ROUND((@@key_buffer_size + @@query_cache_size + @@tmp_table_size + @@innodb_buffer_pool_size + @@innodb_log_buffer_size + @@max_connections * (@@sort_buffer_size + @@read_buffer_size + @@read_rnd_buffer_size + @@join_buffer_size + @@thread_stack + @@binlog_cache_size)) / 1024 / 1024, 2) AS 'Required memory';" | mysql
 }
