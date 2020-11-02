@@ -39,6 +39,16 @@ alias old-ssh="ssh -oKexAlgorithms=+diffie-hellman-group1-sha1"
 alias openssl-view-csr="openssl req -noout -text -in"
 alias openssl-view-crt="openssl x509 -noout -text -in"
 
+openssl-modulus-crt() {
+	openssl x509 -noout -modulus -in $1 | openssl md5
+}
+openssl-modulus-key() {
+	openssl rsa -noout -modulus -in $1 | openssl md5
+}
+openssl-modulus-csr() {
+	openssl req -noout -modulus -in $1 | openssl md5
+}
+
 export EDITOR="vim"
 peek() { tmux split-window -p 33 "$EDITOR" "$@" || exit; }
 
@@ -123,4 +133,15 @@ mysql-stats() {
 
 mysql-calc-memory () {
   echo "SELECT ROUND((@@key_buffer_size + @@query_cache_size + @@tmp_table_size + @@innodb_buffer_pool_size + @@innodb_log_buffer_size + @@max_connections * (@@sort_buffer_size + @@read_buffer_size + @@read_rnd_buffer_size + @@join_buffer_size + @@thread_stack + @@binlog_cache_size)) / 1024 / 1024, 2) AS 'Required memory';" | mysql
+}
+
+mysql-db-size() {
+    echo "SELECT table_schema AS \"Database\",
+ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS \"Size (MB)\"
+FROM information_schema.TABLES
+GROUP BY table_schema;" | mysql
+}
+
+mysql-db-engines() {
+  echo "SELECT TABLE_SCHEMA, TABLE_NAME, ENGINE FROM information_schema.TABLES" | mysql
 }
