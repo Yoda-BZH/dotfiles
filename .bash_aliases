@@ -50,9 +50,6 @@ openssl-modulus-csr() {
 }
 
 export EDITOR="vim"
-peek() { tmux split-window -p 33 "$EDITOR" "$@" || exit; }
-
-export EDITOR="vim"
 
 # https://github.com/lf94/peek-for-tmux
 peek() { tmux split-window -p 33 "$EDITOR" "$@" || exit; }
