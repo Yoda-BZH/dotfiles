@@ -27,8 +27,6 @@ alias vul="vim"
 alias gti="git"
 alias sys_create_dirs="mkdir -p bin etc lib usr/{src,share} var/{www,run,lib,log} tmp"
 alias anonssh="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-alias vul="vim"
-alias gti="git"
 
 # some more ls aliases
 alias ll='ls -alF'
