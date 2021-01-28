@@ -145,3 +145,17 @@ GROUP BY table_schema;" | mysql
 mysql-db-engines() {
   echo "SELECT TABLE_SCHEMA, TABLE_NAME, ENGINE FROM information_schema.TABLES" | mysql
 }
+
+mysql-table-size() {
+    echo "SELECT
+  TABLE_SCHEMA AS \`Database\`,
+  TABLE_NAME AS \`Table\`,
+  ROUND((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024) AS \`Size (MB)\`
+FROM
+  information_schema.TABLES
+ORDER BY
+  (DATA_LENGTH + INDEX_LENGTH)
+DESC;
+" | mysql
+}
+
