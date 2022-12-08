@@ -1,0 +1,22 @@
+# Ceci est le fichier de configuration personnel de Git.
+[user]
+	name = 
+	email = 
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	last = log -1 HEAD
+	renameTag = "!sh -c 'set -e;git tag $2 $1; git tag -d $1;git push origin :refs/tags/$1;git push --tags' -"
+	psuh = push
+	branch-name = "!git rev-parse --abbrev-ref HEAD"
+[push]
+	default = current
+#[credential]
+#	helper = !aws codecommit --profile profilename credential-helper $@
+#	UseHttpPath = true
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main
